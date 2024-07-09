@@ -1,4 +1,4 @@
 nacos:
   server-addr: http://124.221.238.140:8848
-  config-namespace: bf08159a-faf7-4874-afce-948f1e244d03
+  config-namespace: 6a11efbe-3e8c-432f-92d7-856466655264
   server-ip: 124.221.238.140:8848
