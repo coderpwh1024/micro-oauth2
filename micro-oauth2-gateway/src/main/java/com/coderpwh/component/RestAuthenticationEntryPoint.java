@@ -15,6 +15,7 @@ import com.coderpwh.api.CommonResult;
 import java.nio.charset.Charset;
 
 /**
+ *  自定义返回结果，没有登录或token过期时
  * @author coderpwh
  */
 @Component
@@ -24,12 +25,11 @@ public class RestAuthenticationEntryPoint  implements ServerAuthenticationEntryP
 
 
     @Override
-    public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
-        ServerHttpResponse response = (ServerHttpResponse) exchange.getResponse();
+    public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e) {
+        ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-
-        String body= JSONUtil.toJsonStr(CommonResult.unauthorized(ex.getMessage()));
+        String body= JSONUtil.toJsonStr(CommonResult.unauthorized(e.getMessage()));
         DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(Charset.forName("UTF-8")));
         return response.writeWith(Mono.just(buffer));
     }
