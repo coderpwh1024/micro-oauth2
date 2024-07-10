@@ -17,7 +17,7 @@ import java.util.Map;
  * @author coderpwh
  */
 @RestController
-@RequestMapping(value = "oauth")
+@RequestMapping(value = "/oauth")
 public class AuthController {
 
 
