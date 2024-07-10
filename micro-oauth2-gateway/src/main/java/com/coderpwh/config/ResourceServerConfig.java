@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -26,7 +27,7 @@ import org.springframework.core.convert.converter.Converter;
  */
 @AllArgsConstructor
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 public class ResourceServerConfig {
 
 
@@ -41,30 +42,27 @@ public class ResourceServerConfig {
     private final IgnoreUrlsRemoveJwtFilter ignoreUrlsRemoveJwtFilter;
 
 
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-
         http.oauth2ResourceServer().jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
-
+        //自定义处理JWT请求头过期或签名错误的结果
         http.oauth2ResourceServer().authenticationEntryPoint(restAuthenticationEntryPoint);
-
         //对白名单路径，直接移除JWT请求头
         http.addFilterBefore(ignoreUrlsRemoveJwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
-
         http.authorizeExchange()
                 //白名单配置
-                .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(), String.class)).permitAll()
+                .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()
                 //鉴权管理器配置
                 .anyExchange().access(authorizationManager)
-                //处理未授权
                 .and().exceptionHandling()
+                //处理未授权
                 .accessDeniedHandler(restfulAccessDeniedHandler)
                 //处理未认证
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and().csrf().disable();
         return http.build();
-
     }
 
 
