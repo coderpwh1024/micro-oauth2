@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "secure.ignore",
+      "type": "com.coderpwh.config.IgnoreUrlsConfig",
+      "sourceType": "com.coderpwh.config.IgnoreUrlsConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "secure.ignore.urls",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.coderpwh.config.IgnoreUrlsConfig"
+    }
+  ],
+  "hints": []
+}
