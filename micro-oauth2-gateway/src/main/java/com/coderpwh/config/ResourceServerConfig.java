@@ -1,12 +1,14 @@
 package com.coderpwh.config;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.json.JSONUtil;
 import com.coderpwh.authorization.AuthorizationManager;
 import com.coderpwh.component.RestAuthenticationEntryPoint;
 import com.coderpwh.component.RestfulAccessDeniedHandler;
 import com.coderpwh.constant.AuthConstant;
 import com.coderpwh.filter.IgnoreUrlsRemoveJwtFilter;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -25,6 +27,7 @@ import org.springframework.core.convert.converter.Converter;
 /**
  * @author coderpwh
  */
+@Slf4j
 @AllArgsConstructor
 @Configuration
 @EnableWebFluxSecurity
@@ -42,9 +45,9 @@ public class ResourceServerConfig {
     private final IgnoreUrlsRemoveJwtFilter ignoreUrlsRemoveJwtFilter;
 
 
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        log.info("白名单:{}", JSONUtil.toJsonPrettyStr(ignoreUrlsConfig.getUrls()));
         http.oauth2ResourceServer().jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
         //自定义处理JWT请求头过期或签名错误的结果
@@ -53,7 +56,7 @@ public class ResourceServerConfig {
         http.addFilterBefore(ignoreUrlsRemoveJwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         http.authorizeExchange()
                 //白名单配置
-                .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()
+                .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(), String.class)).permitAll()
                 //鉴权管理器配置
                 .anyExchange().access(authorizationManager)
                 .and().exceptionHandling()
