@@ -22,7 +22,7 @@ public class OtherController {
     @Autowired
     private LoginUserHolder loginUserHolder;
 
-    @RequestMapping(value = "/into", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     public Map<String, Object> getOtherInfo(String str) {
         UserDTO userDTO = loginUserHolder.getCurrentUser();
         log.info("user信息为:{}", JSONUtil.toJsonStr(userDTO));
