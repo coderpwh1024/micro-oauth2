@@ -10,10 +10,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class OtherApiApplication {
+public class OtherApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OtherApiApplication.class, args);
+        SpringApplication.run(OtherApplication.class, args);
     }
 
 }
