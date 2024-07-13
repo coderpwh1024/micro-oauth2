@@ -1,20 +1,15 @@
 package com.coderpwh.config;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Objects;
 
 @Slf4j
@@ -22,7 +17,27 @@ import java.util.Objects;
 public class FeignHeadersInterceptor implements RequestInterceptor {
 
 
+
+    private static final Pattern BEARER_TOKEN_HEADER_PATTERN = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+=*)$",
+            Pattern.CASE_INSENSITIVE);
+
     @Override
+    public void apply(RequestTemplate template) {
+        final String authorization = HttpHeaders.AUTHORIZATION;
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (Objects.nonNull(requestAttributes)) {
+            String authorizationHeader = requestAttributes.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
+            Matcher matcher = BEARER_TOKEN_HEADER_PATTERN.matcher(authorizationHeader);
+            if (matcher.matches()) {
+                // 清除token头 避免传染
+                template.header(authorization);
+                template.header(authorization, authorizationHeader);
+            }
+        }
+    }
+
+
+/*    @Override
     public void apply(RequestTemplate template) {
 
         HttpServletRequest request = getHttpServletRequest();
@@ -69,5 +84,5 @@ public class FeignHeadersInterceptor implements RequestInterceptor {
         }
 
         return map;
-    }
+    }*/
 }

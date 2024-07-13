@@ -2,14 +2,16 @@ package com.coderpwh.holder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.coderpwh.domain.UserDTO;
-
+import org.springframework.web.server.ServerWebExchange;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.json.JSONObject;
+
 
 /**
  * @author coderpwh
